@@ -75,14 +75,18 @@ public final class RunBerlinScenario {
 		}
 		
 		if ( args.length==0 ) {
-			args = new String[] {"scenarios/berlin-v5.5-1pct/input/berlin-v5.5-1pct.config.xml"}  ;
+			args = new String[] {"scenarios/berlin-v5.5-1pct/input/berlin-v5.5-1pct.config.xml"};
 		}
 
 		Config config = prepareConfig( args ) ;
+
+		config.controler().setOutputDirectory(config.controler().getOutputDirectory() + "-hw");
+
 		Scenario scenario = prepareScenario( config ) ;
 
 		Network network = scenario.getNetwork();
-		LinkEditor.editLinks("scenarios/links_to_change", network);
+		//LinkEditor.editLinksFromFile("scenarios/links_to_change", network);
+		LinkEditor.editLinksInArea(network);
 
 		Controler controler = prepareControler( scenario ) ;
 		controler.run();
