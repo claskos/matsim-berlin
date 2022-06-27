@@ -46,6 +46,7 @@ public class TripAnalysis {
         var counter = 0;*/
 
         {
+            // run for homework output
             var network_hw = NetworkUtils.readNetwork(networkFilePath_hw);
             var population_hw = PopulationUtils.readPopulation(plansFilePath_hw);
 
@@ -57,6 +58,7 @@ public class TripAnalysis {
         }
         System.gc();
         {
+            // run for baesline output
             var network_baseline = NetworkUtils.readNetwork(networkFilePath_baseline);
             var population_baseline = PopulationUtils.readPopulation(plansFilePath_baseline);
 
@@ -77,6 +79,7 @@ public class TripAnalysis {
     }
 
     private static Map<Id<Person>, AffectedPerson> getAffectedPersons(Population population, Network network) {
+        //stores person data of all persons that have an activity in the area of interest
         Map<Id<Person>, AffectedPerson> affected_persons = new HashMap<>();
 
         for (Person person : population.getPersons().values()) {
@@ -107,6 +110,7 @@ public class TripAnalysis {
     }
 
     private static void writePersonsToJSON (Map<Id<Person>, AffectedPerson> affected_persons, String filename) {
+        // create a JSON file from our affected person to use for plotting in python
         JSONArray ar = new JSONArray();
         for (AffectedPerson ap : affected_persons.values()) {
             JSONObject curr_person = new JSONObject();
@@ -124,7 +128,6 @@ public class TripAnalysis {
         outJSON.put("persons", ar);
 
         try (FileWriter file = new FileWriter(filename)) {
-            //We can write any JSONArray or JSONObject instance to the file
             file.write(outJSON.toJSONString());
             file.flush();
 
@@ -145,6 +148,7 @@ public class TripAnalysis {
 
 
     private static boolean isInArea(Coord coord, Network network) {
+        //check if the coord is within our defined area with changed links
         double top = network.getNodes().get(Id.createNodeId(26736196)).getCoord().getY();
         double bottom = network.getNodes().get(Id.createNodeId(26731247)).getCoord().getY();
         double left = network.getNodes().get(Id.createNodeId(26740508)).getCoord().getX();

@@ -52,6 +52,7 @@ public class LinkEditor {
         double left = network.getNodes().get(Id.createNodeId(26740508)).getCoord().getX();
         double right = network.getNodes().get(Id.createNodeId(3366747771L)).getCoord().getX();
 
+        // get all nodes that are in the area of interest
         for (Node node : nodes) {
             if (isInArea(node, top, bottom, left, right)) {
                 if(!node.getId().toString().contains("pt")) {
@@ -60,6 +61,7 @@ public class LinkEditor {
             }
         }
 
+        //change incoming and outgoing links of the nodes select, but only if the node on the other end, is also in area of interest
         for (Node node : nodes_to_edit.values()) {
             Collection<? extends Link> in_links = node.getInLinks().values();
             for (Link link : in_links) {
@@ -82,6 +84,7 @@ public class LinkEditor {
     }
 
     private static boolean isInArea(Node node, double top_y, double bottom_y, double left_x, double right_x) {
+        // check if given node is in the area of interest
         Coord coord = node.getCoord();
 
         return coord.getX() > left_x && coord.getX() < right_x && coord.getY() < top_y && coord.getY() > bottom_y;

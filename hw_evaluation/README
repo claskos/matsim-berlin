@@ -1,0 +1,3 @@
+Please run the TripAnalysis in java first, then extract the trips files from baseline and homework scenario to the folder of the python script.
+Also add the TripAnalysis output to the script folder.
+Then run the create_plots.py script.
