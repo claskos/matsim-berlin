@@ -28,18 +28,19 @@ def extract_data(json_file, trips_file):
     #print(trips.iloc[[0]])
     
     ids = []
+    home_in_block = []
     for p in persons:
         ids.append(p["id"])
+        if 'home' in p["activities"]:
+            home_in_block.append(p["id"])
+    #print(len(home_in_block))
         
     trips = trips[trips.person.isin(ids)]
-    #trips = trips[~trips.person.isin(ids)] # not directly affected agents
     trips = trips[["person", "trav_time", "traveled_distance", "main_mode", "wait_time"]].to_numpy()
     #print(len(trips))
     travel_time_dict = dict()
     travel_dist_dict = dict()
     pt_wait_time = []
-    #car_travel_time = dict()
-    #car_travel_dist = dict()
     
     # change times to minutes and store them in their dict per person, also store distance and convert and store pt wait time
     for i in range(len(trips)):
@@ -59,13 +60,6 @@ def extract_data(json_file, trips_file):
         if trips[i, 3] == 'pt':
             pt_wait_time.append(trips[i, 4])
             
-        # if trips[i, 3] == 'car':
-        #     if not car_travel_time.get(trips[i, 0]):
-        #         car_travel_time[trips[i, 0]] = 0
-        #     car_travel_time[trips[i, 0]] += trips[i, 1]
-        #     if not car_travel_dist.get(trips[i, 0]):
-        #         car_travel_dist[trips[i, 0]] = 0
-        #     car_travel_dist[trips[i, 0]] += trips[i, 2]
         
     mode_share = trips[:,3]
     #print(travel_time_dict)
@@ -79,13 +73,11 @@ def extract_data(json_file, trips_file):
         for act in p['activities']:
             activities.append(act)
     
-    return travel_time_dict, travel_dist_dict, pt_wait_time, mode_share, activities, home_region, trips
+    return travel_time_dict, travel_dist_dict, pt_wait_time, mode_share, activities, home_region, trips, home_in_block
 
 def plotTravelTimes(time_base, time_hw):
     #### travel time
     plt.figure()
-    # plt.boxplot([np.fromiter(time_base.values(), dtype=float), np.fromiter(time_hw.values(), dtype=float)], 
-    #             labels=["Baseline", "Homework"], showfliers=False)
     data = [np.ravel(np.fromiter(time_base.values(), dtype=float)), np.ravel(np.fromiter(time_hw.values(), dtype=float))]
     boxplot = sns.boxplot(data = data, showfliers=False)
     medians = np.round(np.asarray([np.median(data[0]), np.median(data[1])]), 2)
@@ -217,8 +209,8 @@ def plotTimePerKm(time_base, dist_base, time_hw, dist_hw):
     plt.xticks(ticks=[0,1], labels=["Baseline", "Homework"])
     plt.show()
     
-def PlotTimePerKmCarOnly(trips_base, trips_hw):
-    print("F")
+def plotTimePerKmCarOnly(trips_base, trips_hw):
+    #print("F")
     hw_using_car = list()
     for row in trips_hw: # select legs with car and person does not exists yet in list
         if row[3] == 'car' and not row[0] in hw_using_car:
@@ -230,15 +222,6 @@ def PlotTimePerKmCarOnly(trips_base, trips_hw):
         base_index = np.where(trips_base[:, 0] == car_user)
         hw_index = np.where(trips_hw[:, 0] == car_user)
         
-        #### ignore this
-        # print(base_index)
-        # base_test = np.where(trips_base[base_index][:,3] == 'car')
-        # hw_test = np.where(trips_hw[hw_index][:,3] == 'car')
-        # print(type(base_test))
-        # base_index = base_index[base_test[0]]
-        # hw_index = hw_index[hw_test[0]]
-        ####
-        
         # calculate travel time/km for baseline and hw scenario
         base_time = np.sum(trips_base[base_index][:, 1])
         base_dist = np.sum(trips_base[base_index][:, 2])
@@ -247,7 +230,6 @@ def PlotTimePerKmCarOnly(trips_base, trips_hw):
         hw_time = np.sum(trips_hw[hw_index][:, 1])
         hw_dist = np.sum(trips_hw[hw_index][:, 2])
         hw_time_per_dist.append(hw_time / hw_dist)
-        #break
 
     #### minutes per km car users only
     plt.figure()
@@ -263,9 +245,38 @@ def PlotTimePerKmCarOnly(trips_base, trips_hw):
     plt.ylabel("Time per Km (minutes)")
     plt.xticks(ticks=[0,1], labels=["Baseline", "Homework"])
     plt.show()
+    
+def plotHomeInBlockModeChange(trips_base, trips_hw, home_in_block_base, home_in_block_hw):
+    #### plot only mode share of persons actually living inside the mega block
+    modes_base = []
+    for i in range(len(trips_base)):
+        if trips_base[i, 0] in home_in_block_base:
+            modes_base.append(trips_base[i, 3])
+    
+    modes_hw = []
+    for i in range(len(trips_hw)):
+        if trips_hw[i, 0] in home_in_block_hw:
+            modes_hw.append(trips_hw[i, 3])
+            
+    len_base = len(modes_base)
+    len_hw = len(modes_hw)
+    modes_base = Counter(modes_base)
+    modes_hw = Counter(modes_hw)
+    fig, (ax1, ax2) = plt.subplots(1, 2, sharey=True)
+    ax1.bar(np.arange(len(modes_base)), np.fromiter(modes_base.values(), dtype=int) / len_base)
+    ax1.set(xticks=np.arange(len(modes_base)), xticklabels=list(modes_base.keys()))
 
-travel_time_base, travel_dist_base, pt_wait_base, modes_base, act_base, home_base, trips_base = extract_data("affected_persons_baseline.json", "trips_baseline.csv")
-travel_time_hw, travel_dist_hw, pt_wait_hw, modes_hw, act_hw, home_hw, trips_hw = extract_data("affected_persons_hw.json", "trips_hw.csv")
+    ax2.bar(np.arange(len(modes_hw)), np.fromiter(modes_hw.values(), dtype=int) / len_hw, color="orange")
+    ax2.set(xticks=np.arange(len(modes_hw)), xticklabels=list(modes_hw.keys()))
+    
+    fig.suptitle("Modeshare of Persons Living in Mega Block")
+    ax1.set(xlabel="Mode Baseline")
+    ax2.set(xlabel="Mode Homework")
+    ax1.set(ylabel="Share")
+    plt.show()
+
+travel_time_base, travel_dist_base, pt_wait_base, modes_base, act_base, home_base, trips_base, home_in_block_base = extract_data("affected_persons_baseline.json", "trips_baseline.csv")
+travel_time_hw, travel_dist_hw, pt_wait_hw, modes_hw, act_hw, home_hw, trips_hw, home_in_block_hw = extract_data("affected_persons_hw.json", "trips_hw.csv")
 
 sns.set_theme(style="whitegrid")
 
@@ -276,4 +287,5 @@ plotModeShare(modes_base, modes_hw)
 plotActivities(act_base, act_hw)
 plotHomeRegion(home_base, home_hw)
 plotTimePerKm(travel_time_base, travel_dist_base, travel_time_hw, travel_dist_hw)
-PlotTimePerKmCarOnly(trips_base, trips_hw)
+plotTimePerKmCarOnly(trips_base, trips_hw)
+plotHomeInBlockModeChange(trips_base, trips_hw, home_in_block_base, home_in_block_hw)
