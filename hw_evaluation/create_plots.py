@@ -36,6 +36,10 @@ def extract_data(json_file, trips_file):
     #print(len(home_in_block))
         
     trips = trips[trips.person.isin(ids)]
+    
+    new_path = trips_file.split('.')[0] + "_affected_only.csv"
+    trips.to_csv(new_path, sep=";")
+    
     trips = trips[["person", "trav_time", "traveled_distance", "main_mode", "wait_time"]].to_numpy()
     #print(len(trips))
     travel_time_dict = dict()
