@@ -50,6 +50,8 @@ import org.matsim.core.scenario.ScenarioUtils;
 import org.matsim.core.scoring.functions.ScoringParametersForPerson;
 import org.matsim.core.utils.geometry.transformations.TransformationFactory;
 import org.matsim.homework.LinkEditor;
+import org.matsim.homework2.LinkEditorHw2;
+import org.matsim.homework2.LinksInShape;
 import org.matsim.prepare.population.AssignIncome;
 import org.matsim.run.drt.OpenBerlinIntermodalPtDrtRouterModeIdentifier;
 import org.matsim.run.drt.RunDrtOpenBerlinScenario;
@@ -80,13 +82,15 @@ public final class RunBerlinScenario {
 
 		Config config = prepareConfig( args ) ;
 
-		config.controler().setOutputDirectory(config.controler().getOutputDirectory() + "-hw");
+		config.controler().setOutputDirectory(config.controler().getOutputDirectory() + "-hw2-case3");
 
 		Scenario scenario = prepareScenario( config ) ;
 
 		Network network = scenario.getNetwork();
-		//LinkEditor.editLinksFromFile("scenarios/links_to_change", network);
-		LinkEditor.editLinksInArea(network);
+		List<Link> linksToEdit = LinksInShape.getLinksInShape(network);
+//		System.out.println(linksToEdit.size());
+		LinkEditorHw2.editLinks(linksToEdit, 3);
+//		System.exit(1);
 
 		Controler controler = prepareControler( scenario ) ;
 		controler.run();

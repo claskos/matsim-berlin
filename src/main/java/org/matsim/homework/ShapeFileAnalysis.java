@@ -1,6 +1,6 @@
-package org.matsim.analysis.homework;
+package org.matsim.homework;
 
-import org.jetbrains.annotations.NotNull;
+//import org.jetbrains.annotations.NotNull;
 import org.locationtech.jts.geom.Geometry;
 import org.matsim.api.core.v01.Coord;
 import org.matsim.core.utils.geometry.geotools.MGC;
@@ -18,7 +18,7 @@ chosen by specifying an attribute-ID key-value pair. Check the shape file in Via
 public class ShapeFileAnalysis {
 
     // Retrieves all coordinates of a specified geometry from a specified shape file.
-    public static Coord @NotNull [] getShapeCoordinates(String shapeFileName, String shapeAttribute, String shapeID) {
+    public static Coord[] getShapeCoordinates(String shapeFileName, String shapeAttribute, String shapeID) {
 
         // Retrieve all features/shapes from the file
         var features = ShapeFileReader.getAllFeatures(shapeFileName);
