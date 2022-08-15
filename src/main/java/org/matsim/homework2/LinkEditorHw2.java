@@ -75,6 +75,58 @@ public class LinkEditorHw2 {
                 }
             }
         }
+        else if (hw_case == 4) {
+            // 30 km/h in primary and secondary streets, 10 km/h and 10% capacity in residential and living streets
+            double free_speed_residential = 2.8;
+            double capacity_factor_residential = 0.1;
+            double free_speed_main = 8.3;
+
+            for (Link link : links) {
+                Object link_type_obj = link.getAttributes().getAttribute("type");
+                if (link_type_obj != null) {
+                    String link_type = link_type_obj.toString();
+                    if (link_type.equals("residential") || link_type.equals("living_street")) {
+                        if (link.getFreespeed() > free_speed_residential) {
+                            link.setFreespeed(free_speed_residential);
+                        }
+                        link.setCapacity(link.getCapacity() * capacity_factor_residential);
+                    } else if (link_type.equals("primary") || link_type.equals("secondary") ||
+                            link_type.equals("primary_link") || link_type.equals("secondary_link") ||
+                            link_type.equals("tertiary")) {
+                        if (link.getFreespeed() > free_speed_main) {
+                            link.setFreespeed(free_speed_main);
+                        }
+                    }
+                }
+            }
+        }
+        else if (hw_case == 5) {
+            // 30 km/h and 25% capacity in primary and secondary streets, 10 km/h and 10% capacity in residential and living streets
+            double free_speed_residential = 2.8;
+            double capacity_factor_residential = 0.1;
+            double free_speed_main = 8.3;
+            double capacity_factor_main = 0.25;
+
+            for (Link link : links) {
+                Object link_type_obj = link.getAttributes().getAttribute("type");
+                if (link_type_obj != null) {
+                    String link_type = link_type_obj.toString();
+                    if (link_type.equals("residential") || link_type.equals("living_street")) {
+                        if (link.getFreespeed() > free_speed_residential) {
+                            link.setFreespeed(free_speed_residential);
+                        }
+                        link.setCapacity(link.getCapacity() * capacity_factor_residential);
+                    } else if (link_type.equals("primary") || link_type.equals("secondary") ||
+                            link_type.equals("primary_link") || link_type.equals("secondary_link") ||
+                            link_type.equals("tertiary")) {
+                        if (link.getFreespeed() > free_speed_main) {
+                            link.setFreespeed(free_speed_main);
+                        }
+                        link.setCapacity(link.getCapacity() * capacity_factor_main);
+                    }
+                }
+            }
+        }
     }
 
 }

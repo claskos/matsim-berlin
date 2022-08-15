@@ -82,14 +82,14 @@ public final class RunBerlinScenario {
 
 		Config config = prepareConfig( args ) ;
 
-		config.controler().setOutputDirectory(config.controler().getOutputDirectory() + "-hw2-case3");
+		config.controler().setOutputDirectory(config.controler().getOutputDirectory() + "-hw2-case5");
 
 		Scenario scenario = prepareScenario( config ) ;
 
 		Network network = scenario.getNetwork();
 		List<Link> linksToEdit = LinksInShape.getLinksInShape(network);
 //		System.out.println(linksToEdit.size());
-		LinkEditorHw2.editLinks(linksToEdit, 3);
+		LinkEditorHw2.editLinks(linksToEdit, 5);
 //		System.exit(1);
 
 		Controler controler = prepareControler( scenario ) ;
