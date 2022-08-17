@@ -57,8 +57,8 @@ public class RunOfflineNoiseAnalysis {
 
 	public static void main(String[] args) {
 		
-		final String runDirectory = "https://svn.vsp.tu-berlin.de/repos/public-svn/matsim/scenarios/countries/de/berlin/berlin-v5.4-1pct/output-berlin-v5.4-1pct/";
-		final String runId = "berlin-v5.4-1pct";
+		final String runDirectory = "./scenarios/berlin-v5.5-1pct/output-berlin-v5.5-1pct-hw2-case5/";
+		final String runId = "berlin-v5.5-1pct";
 		
 		RunOfflineNoiseAnalysis analysis = new RunOfflineNoiseAnalysis(runDirectory, runId, "./scenario/");
 		analysis.run();
@@ -69,7 +69,7 @@ public class RunOfflineNoiseAnalysis {
 		double timeBinSize = 3600.;
 		
 		Config config = ConfigUtils.createConfig(new NoiseConfigGroup());
-		config.global().setCoordinateSystem("GK4");
+		config.global().setCoordinateSystem("EPSG:31468");
 		config.network().setInputFile(runDirectory + runId + ".output_network.xml.gz");
 		config.plans().setInputFile(runDirectory + runId + ".output_plans.xml.gz");
 		config.controler().setOutputDirectory(runDirectory);
