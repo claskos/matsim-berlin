@@ -1,0 +1,3 @@
+no big difference in emissions from baseline to case 2 and case 3.
+problem with case 2, is that in hbefa, anything under 30kmh is the same, so no change in emissions.
+problem with case 3, is that in baseline network most of the primary and secondary links already have a low speed of 6.9 m/s or about 25 km/h, so our change to 30 km/h affects only very few links. Thus we see no effect of that policy.

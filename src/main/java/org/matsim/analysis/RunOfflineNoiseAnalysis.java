@@ -57,10 +57,10 @@ public class RunOfflineNoiseAnalysis {
 
 	public static void main(String[] args) {
 		
-		final String runDirectory = "./scenarios/berlin-v5.5-1pct/output-berlin-v5.5-1pct-hw2-case5/";
+		final String runDirectory = "./scenarios/berlin-v5.5-1pct/output-berlin-v5.5-1pct-baseline/";
 		final String runId = "berlin-v5.5-1pct";
 		
-		RunOfflineNoiseAnalysis analysis = new RunOfflineNoiseAnalysis(runDirectory, runId, "./scenario/");
+		RunOfflineNoiseAnalysis analysis = new RunOfflineNoiseAnalysis(runDirectory, runId, "./scenario/noise/");
 		analysis.run();
 	}
 

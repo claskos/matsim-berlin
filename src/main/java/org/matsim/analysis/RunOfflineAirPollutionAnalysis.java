@@ -59,18 +59,18 @@ public class RunOfflineAirPollutionAnalysis {
 			String rootDirectory = args[0];
 			if (!rootDirectory.endsWith("/")) rootDirectory = rootDirectory + "/";
 			
-			final String runDirectory = "public-svn/matsim/scenarios/countries/de/berlin/berlin-v5.4-10pct/output-berlin-v5.4-10pct/";	
-			final String runId = "berlin-v5.4-10pct";
+			final String runDirectory = "scenarios/berlin-v5.5-1pct/output-berlin-v5.5-1pct-baseline/";
+			final String runId = "berlin-v5.5-1pct";
 
-			final String hbefaFileCold = "shared-svn/projects/matsim-germany/hbefa/hbefa-files/v3.2/EFA_ColdStart_vehcat_2005average.txt";
-			final String hbefaFileWarm = "shared-svn/projects/matsim-germany/hbefa/hbefa-files/v3.2/EFA_HOT_vehcat_2005average.txt";
+			final String hbefaFileCold = "scenario/HBEFA/EFA_ColdStart_Concept_2020_detailed_perTechAverage_withHGVetc.csv";
+			final String hbefaFileWarm = "scenario/HBEFA/EFA_HOT_Vehcat_2020_Average.csv";
 			
 			RunOfflineAirPollutionAnalysis analysis = new RunOfflineAirPollutionAnalysis(
-					rootDirectory + runDirectory,
+					runDirectory,
 					runId,
-					rootDirectory + hbefaFileWarm,
-					rootDirectory + hbefaFileCold,
-					rootDirectory + runDirectory);
+					hbefaFileWarm,
+					hbefaFileCold,
+					"scenario/air-pollution/");
 			analysis.run();
 			
 		} else {
@@ -95,7 +95,7 @@ public class RunOfflineAirPollutionAnalysis {
 		config.network().setInputFile(runDirectory + runId + ".output_network.xml.gz");
 		config.transit().setTransitScheduleFile(runDirectory + runId + ".output_transitSchedule.xml.gz");
 		config.transit().setVehiclesFile(runDirectory + runId + ".output_transitVehicles.xml.gz");
-		config.global().setCoordinateSystem("GK4");
+		config.global().setCoordinateSystem("EPSG:31468");
 		config.plans().setInputFile(null);
 		config.parallelEventHandling().setNumberOfThreads(null);
 		config.parallelEventHandling().setEstimatedNumberOfEvents(null);
@@ -124,7 +124,7 @@ public class RunOfflineAirPollutionAnalysis {
 				freespeed = link.getFreespeed();
 				// for motorways, the original speed levels seems ok.
 			}
-			
+
 			if(freespeed <= 8.333333333){ //30kmh
 				link.getAttributes().putAttribute("hbefa_road_type", "URB/Access/30");
 			} else if(freespeed <= 11.111111111){ //40kmh
